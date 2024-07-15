@@ -62,37 +62,37 @@ Berakhir Pada    : $EXPIRED_AT
 
 END
 
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "            SSH Account"
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "Username         : ${USERNAME}"
-echo "Password         : ${PASSWORD}"
-echo "Expired On       : ${EXPIRED_AT}"
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "ISP              : ${ISP}"
-echo "CITY             : ${CITY}"
-echo "IP               : ${IP}"
-echo "Host             : ${DOMAIN}"
-echo "Port OpenSSH     : 443, 80, 22"
-echo "Port SSH UDP     : 1-65535"
-echo "Port Dropbear    : 443, 109"
-echo "Port SSH WS      : 80, 8080, 8081-9999"
-echo "Port SSH SSL WS  : 443"
-echo "Port SSL/TLS     : 400-900"
-echo "Port OVPN WS SSL : 443"
-echo "Port OVPN SSL    : 443"
-echo "Port OVPN TCP    : 443, 1194"
-echo "Port OVPN UDP    : 2200"
-echo "BadVPN UDP       : 7100, 7300, 7300"
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "OVPN Download    : https://$DOMAIN:81/"
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "Http Custom Udp  : ${DOMAIN}:1-65535@${USERNAME}:${PASSWORD}"
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "Save Link Account: https://$DOMAIN:81/ssh-$USERNAME.txt"
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "Payload WSS"
-echo "GET wss://isi_bug_disini HTTP/1.1[crlf]Host: ${DOMAIN}[crlf]Upgrade: websocket[crlf][crlf]"
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "Payload WS"
-echo "GET / HTTP/1.1[crlf]Host: ${DOMAIN}[crlf]Upgrade: websocket[crlf][crlf]"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" | tee -a /etc/xray/sshx/akun/log-create-${USERNAME}.log
+echo "            SSH Account" | tee -a /etc/xray/sshx/akun/log-create-${USERNAME}.log
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" | tee -a /etc/xray/sshx/akun/log-create-${USERNAME}.log
+echo "Username         : ${USERNAME}" | tee -a /etc/xray/sshx/akun/log-create-${USERNAME}.log
+echo "Password         : ${PASSWORD}" | tee -a /etc/xray/sshx/akun/log-create-${USERNAME}.log
+echo "Expired On       : ${EXPIRED_AT}" | tee -a /etc/xray/sshx/akun/log-create-${USERNAME}.log
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" | tee -a /etc/xray/sshx/akun/log-create-${USERNAME}.log
+echo "ISP              : ${ISP}" | tee -a /etc/xray/sshx/akun/log-create-${USERNAME}.log
+echo "CITY             : ${CITY}" | tee -a /etc/xray/sshx/akun/log-create-${USERNAME}.log
+echo "IP               : ${IP}" | tee -a /etc/xray/sshx/akun/log-create-${USERNAME}.log
+echo "Host             : ${DOMAIN}" | tee -a /etc/xray/sshx/akun/log-create-${USERNAME}.log
+echo "Port OpenSSH     : 443, 80, 22" | tee -a /etc/xray/sshx/akun/log-create-${USERNAME}.log
+echo "Port SSH UDP     : 1-65535" | tee -a /etc/xray/sshx/akun/log-create-${USERNAME}.log
+echo "Port Dropbear    : 443, 109" | tee -a /etc/xray/sshx/akun/log-create-${USERNAME}.log
+echo "Port SSH WS      : 80, 8080, 8081-9999" | tee -a /etc/xray/sshx/akun/log-create-${USERNAME}.log
+echo "Port SSH SSL WS  : 443" | tee -a /etc/xray/sshx/akun/log-create-${USERNAME}.log
+echo "Port SSL/TLS     : 400-900" | tee -a /etc/xray/sshx/akun/log-create-${USERNAME}.log
+echo "Port OVPN WS SSL : 443" | tee -a /etc/xray/sshx/akun/log-create-${USERNAME}.log
+echo "Port OVPN SSL    : 443" | tee -a /etc/xray/sshx/akun/log-create-${USERNAME}.log
+echo "Port OVPN TCP    : 443, 1194" | tee -a /etc/xray/sshx/akun/log-create-${USERNAME}.log
+echo "Port OVPN UDP    : 2200" | tee -a /etc/xray/sshx/akun/log-create-${USERNAME}.log
+echo "BadVPN UDP       : 7100, 7300, 7300" | tee -a /etc/xray/sshx/akun/log-create-${USERNAME}.log
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" | tee -a /etc/xray/sshx/akun/log-create-${USERNAME}.log
+echo "OVPN Download    : https://$DOMAIN:81/" | tee -a /etc/xray/sshx/akun/log-create-${USERNAME}.log
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" | tee -a /etc/xray/sshx/akun/log-create-${USERNAME}.log
+echo "Http Custom Udp  : ${DOMAIN}:1-65535@${USERNAME}:${PASSWORD}" | tee -a /etc/xray/sshx/akun/log-create-${USERNAME}.log
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" | tee -a /etc/xray/sshx/akun/log-create-${USERNAME}.log
+echo "Save Link Account: https://$DOMAIN:81/ssh-$USERNAME.txt" | tee -a /etc/xray/sshx/akun/log-create-${USERNAME}.log
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" | tee -a /etc/xray/sshx/akun/log-create-${USERNAME}.log
+echo "Payload WSS" | tee -a /etc/xray/sshx/akun/log-create-${USERNAME}.log
+echo "GET wss://isi_bug_disini HTTP/1.1[crlf]Host: ${DOMAIN}[crlf]Upgrade: websocket[crlf][crlf]" | tee -a /etc/xray/sshx/akun/log-create-${USERNAME}.log
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" | tee -a /etc/xray/sshx/akun/log-create-${USERNAME}.log
+echo "Payload WS" | tee -a /etc/xray/sshx/akun/log-create-${USERNAME}.log
+echo "GET / HTTP/1.1[crlf]Host: ${DOMAIN}[crlf]Upgrade: websocket[crlf][crlf]" | tee -a /etc/xray/sshx/akun/log-create-${USERNAME}.log

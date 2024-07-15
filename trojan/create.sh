@@ -2,8 +2,8 @@
 
 USERNAME=$1
 EXPIRED_AT=$2
-IPLIMIT="3"
-Quota="0GB"
+IPLIMIT="5"
+QUOTA="0"
 
 IP=$(curl -s ipv4.icanhazip.com)
 ISP=$(cat /etc/xray/isp)
@@ -11,19 +11,21 @@ CITY=$(cat /etc/xray/city)
 DOMAIN=$(cat /etc/xray/domain)
 
 
-function con(){
-    local -i bytes=$1;
-    if [[ $bytes -lt 1024 ]]; then
-        echo "${bytes} B"
-    elif [[ $bytes -lt 1048576 ]]; then
-        echo "$(( (bytes + 1023)/1024 )) KB"
-    elif [[ $bytes -lt 1073741824 ]]; then
-        echo "$(( (bytes + 1048575)/1048576 )) MB"
-    else
-        echo "$(( (bytes + 1073741823)/1073741824 )) GB"
-    fi
-}
-
+if [ ! -e /etc/trojan ]; then
+mkdir -p /etc/trojan
+fi
+if [ ${IPLIMIT} = '0' ]; then
+IPLIMIT="9999"
+fi
+if [ ${QUOTA} = '0' ]; then
+QUOTA="9999"
+fi
+c=$(echo "${QUOTA}" | sed 's/[^0-9]*//g')
+d=$((${c} * 1024 * 1024 * 1024))
+if [[ ${c} != "0" ]]; then
+echo "${d}" >/etc/trojan/${USERNAME}
+fi
+echo "${IPLIMIT}" >/etc/trojan/${USERNAME}IP
 #ISP=$(cat /etc/xray/isp)
 #CITY=$(cat /etc/xray/city)
 # shellcheck disable=SC2002
@@ -38,12 +40,12 @@ TROJAN_LINK_NTLS="trojan://${UUID}@isi_bug_disini:${NTLS}?path=%2Ftrojan-ws&secu
 # shellcheck disable=SC2027
 # shellcheck disable=SC2086
 # shellcheck disable=SC1004
-sed -i '/#trojanws$/a\#! '"$USERNAME $EXPIRED_AT"'\
+sed -i '/#trojanws$/a\#tr '"$USERNAME $EXPIRED_AT"'\
 },{"password": "'""${UUID}""'","email": "'""${USERNAME}""'"' /etc/xray/config.json
 # shellcheck disable=SC2027
 # shellcheck disable=SC2086
 # shellcheck disable=SC1004
-sed -i '/#trojangrpc$/a\#! '"$USERNAME $EXPIRED_AT"'\
+sed -i '/#trojangrpc$/a\#trg '"$USERNAME $EXPIRED_AT"'\
 },{"password": "'""${UUID}""'","email": "'""${USERNAME}""'"' /etc/xray/config.json
 
 
@@ -83,63 +85,8 @@ cat >/var/www/html/trojan-$USERNAME.txt <<-END
   network: grpc
   grpc-opts:
     grpc-service-name: trojan-grpc
+
 END
-
-if [ ! -e /etc/trojan ]; then
-  mkdir -p /etc/trojan
-fi
-
-if [[ $IPLIMIT -gt 0 ]]; then
-mkdir -p /etc/kyt/limit/trojan/ip
-echo -e "$IPLIMIT" > /etc/kyt/limit/trojan/ip/$USERNAME
-else
-echo > /dev/null
-fi
-
-if [ -z ${Quota} ]; then
-  Quota="0MB"
-fi
-
-
-# Menghapus semua karakter kecuali angka, MB, dan GB
-sanitized_input=$(echo "${Quota}" | sed -E 's/[^0-9MBmbGBgb]*//g')
-
-# Mendeteksi apakah input berisi MB atau GB
-
-if [[ $sanitized_input =~ [Mm][Bb]$ ]]; then
-  c=$(echo "${sanitized_input}" | sed 's/[Mm][Bb]$//')
-  if [[ $c -eq 0 ]]; then
-    echo > /dev/null 2>&1
-  fi
-  d=$((${c} * 1024 * 1024))
-elif [[ $sanitized_input =~ [Gg][Bb]$ ]]; then
-  c=$(echo "${sanitized_input}" | sed 's/[Gg][Bb]$//')
-  if [[ $c -eq 0 ]]; then
-    echo > /dev/null 2>&1
-  fi
-  d=$((${c} * 1024 * 1024 * 1024))
-else
-  echo "Input tidak valid. Harap masukkan nilai dengan satuan MB atau GB (contoh: 20MB, 2GB)"
-  exit 1
-fi
-
-    if [[ ${c} != "0" ]]; then
-      echo "${d}" >/etc/trojan/${USERNAME}
-    fi
-
-if [ ! -e /etc/trojan/${USERNAME} ]; then
-    Quota1="Unlimited"
-else
-    baca1=$(cat /etc/trojan/${USERNAME})
-    Quota1=$(con ${baca1})
-fi
-
-if [ ! -e /etc/kyt/limit/trojan/ip/$USERNAME ]; then
-    iplimit="Unlimited"
-else
-    iplimit=$(cat /etc/kyt/limit/trojan/ip/$USERNAME)
-fi
-
 
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo "           TROJAN ACCOUNT"
