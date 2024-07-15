@@ -18,7 +18,7 @@ if [ ${IPLIMIT} = '0' ]; then
 IPLIMIT="9999"
 fi
 if [ ${QUOTA} = '0' ]; then
-QUOTA="9999"
+QUOTA="999"
 fi
 c=$(echo "${QUOTA}" | sed 's/[^0-9]*//g')
 d=$((${c} * 1024 * 1024 * 1024))
@@ -95,8 +95,8 @@ echo "Remarks       : ${USERNAME}" | tee -a /etc/trojan/akun/log-create-${USERNA
 echo "ISP           : ${ISP}" | tee -a /etc/trojan/akun/log-create-${USERNAME}.log
 echo "CITY          : ${CITY}" | tee -a /etc/trojan/akun/log-create-${USERNAME}.log
 echo "Host/IP       : ${DOMAIN}" | tee -a /etc/trojan/akun/log-create-${USERNAME}.log
-echo "User Quota    : ${QUOTA}" | tee -a /etc/trojan/akun/log-create-${USERNAME}.log
-echo "User Ip       : ${IPLIMIT} IP" | tee -a /etc/trojan/akun/log-create-${USERNAME}.log
+echo "Limit Quota    : ${QUOTA} GB" | tee -a /etc/trojan/akun/log-create-${USERNAME}.log
+echo "Limit Ip       : ${IPLIMIT} IP" | tee -a /etc/trojan/akun/log-create-${USERNAME}.log
 echo "Wildcard      : (bug.com).${DOMAIN}" | tee -a /etc/trojan/akun/log-create-${USERNAME}.log
 echo "Port TLS      : ${TLS}" | tee -a /etc/trojan/akun/log-create-${USERNAME}.log
 echo "Port none TLS : ${NTLS}" | tee -a /etc/trojan/akun/log-create-${USERNAME}.log

@@ -10,5 +10,6 @@ sed -i "/^#trg ${USERNAME} ${EXPIRED_AT}/,/^},{/d" /etc/xray/config.json
 rm /etc/trojan/${USERNAME}IP >/dev/null 2>&1
 rm /etc/trojan/$USERNAME
 rm /var/www/html/trojan-$USERNAME.txt
+rm /etc/trojan/akun/log-create-${USERNAME}.log
 
 systemctl restart xray > /dev/null 2>&1
