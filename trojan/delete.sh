@@ -11,5 +11,5 @@ rm /etc/trojan/${USERNAME}IP >/dev/null 2>&1
 rm /etc/trojan/$USERNAME
 rm /var/www/html/trojan-$USERNAME.txt
 rm /etc/trojan/akun/log-create-${USERNAME}.log
-
+rm /etc/limit/trojan/${USERNAME}
 systemctl restart xray > /dev/null 2>&1

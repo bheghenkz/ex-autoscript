@@ -1,12 +1,12 @@
 #!/bin/bash
 
-echo "[VLESS][Step 1/4] Downloading EX-AutoSC..."
+echo "[VLESS][Step 1/4] Downloading ex-autoscript..."
 
-curl -sS https://raw.githubusercontent.com/bheghenkz/EX-AutoSC/main/vless/create.sh --output /usr/local/sbin/vless-create-account
-curl -sS https://raw.githubusercontent.com/bheghenkz/EX-AutoSC/main/vless/renew.sh --output /usr/local/sbin/vless-renew-account
-curl -sS https://raw.githubusercontent.com/bheghenkz/EX-AutoSC/main/vless/delete.sh --output /usr/local/sbin/vless-delete-account
+curl -sS https://raw.githubusercontent.com/bheghenkz/ex-autoscript/main/vless/create.sh --output /usr/local/sbin/vless-create-account
+curl -sS https://raw.githubusercontent.com/bheghenkz/ex-autoscript/main/vless/renew.sh --output /usr/local/sbin/vless-renew-account
+curl -sS https://raw.githubusercontent.com/bheghenkz/ex-autoscript/main/vless/delete.sh --output /usr/local/sbin/vless-delete-account
 
-echo "[VLESS][Step 2/4] EX-AutoSC has been successfully downloaded"
+echo "[VLESS][Step 2/4] ex-autoscript has been successfully downloaded"
 
 sleep 1
 

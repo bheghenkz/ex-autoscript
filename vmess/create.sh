@@ -2,8 +2,8 @@
 
 USERNAME=$1
 EXPIRED_AT=$2
-IPLIMIT="3"
-Quota="0GB"
+IPLIMIT="5"
+QUOTA="0"
 
 IP=$(curl -s ipv4.icanhazip.com)
 ISP=$(cat /etc/xray/isp)
@@ -11,36 +11,35 @@ CITY=$(cat /etc/xray/city)
 DOMAIN=$(cat /etc/xray/domain)
 
 
-function con(){
-    local -i bytes=$1;
-    if [[ $bytes -lt 1024 ]]; then
-        echo "${bytes} B"
-    elif [[ $bytes -lt 1048576 ]]; then
-        echo "$(( (bytes + 1023)/1024 )) KB"
-    elif [[ $bytes -lt 1073741824 ]]; then
-        echo "$(( (bytes + 1048575)/1048576 )) MB"
-    else
-        echo "$(( (bytes + 1073741823)/1073741824 )) GB"
-    fi
-}
-
-
+if [ ! -e /etc/vmess ]; then
+mkdir -p /etc/vmess
+fi
+if [ ${IPLIMIT} = '0' ]; then
+IPLIMIT="9999"
+fi
+if [ ${QUOTA} = '0' ]; then
+QUOTA="9999"
+fi
+c=$(echo "${QUOTA}" | sed 's/[^0-9]*//g')
+d=$((${c} * 1024 * 1024 * 1024))
+if [[ ${c} != "0" ]]; then
+echo "${d}" >/etc/vmess/${USERNAME}
+fi
+echo "${IPLIMIT}" >/etc/vmess/${USERNAME}IP
 # shellcheck disable=SC2002
 TLS="443"
 # shellcheck disable=SC2002
 NTLS="80"
 UUID=$(cat /proc/sys/kernel/random/uuid)
-
-
 # shellcheck disable=SC2027
 # shellcheck disable=SC2086
 # shellcheck disable=SC1004
-sed -i '/#vmess$/a\### '"${USERNAME} ${EXPIRED_AT}"'\
+sed -i '/#vmess$/a\#vm '"${USERNAME} ${EXPIRED_AT}"'\
 },{"id": "'""${UUID}""'","alterId": '"0"',"email": "'""${USERNAME}""'"' /etc/xray/config.json
 # shellcheck disable=SC2027
 # shellcheck disable=SC2086
 # shellcheck disable=SC1004
-sed -i '/#vmessgrpc$/a\### '"${USERNAME} ${EXPIRED_AT}"'\
+sed -i '/#vmessgrpc$/a\#vmg '"${USERNAME} ${EXPIRED_AT}"'\
 },{"id": "'""${UUID}""'","alterId": '"0"',"email": "'""${USERNAME}""'"' /etc/xray/config.json
 
 
@@ -144,90 +143,34 @@ ${VMESS_LINK_GRPC}
 
 END
 
-if [ ! -e /etc/vmess ]; then
-  mkdir -p /etc/vmess
-fi
-
-if [[ $IPLIMIT -gt 0 ]]; then
-mkdir -p /etc/kyt/limit/vmess/ip
-echo -e "$IPLIMIT" > /etc/kyt/limit/vmess/ip/$USERNAME
-else
-echo > /dev/null
-fi
-
-if [ -z ${Quota} ]; then
-  Quota="0MB"
-fi
-
-
-# Menghapus semua karakter kecuali angka, MB, dan GB
-sanitized_input=$(echo "${Quota}" | sed -E 's/[^0-9MBmbGBgb]*//g')
-
-# Mendeteksi apakah input berisi MB atau GB
-
-if [[ $sanitized_input =~ [Mm][Bb]$ ]]; then
-  c=$(echo "${sanitized_input}" | sed 's/[Mm][Bb]$//')
-  if [[ $c -eq 0 ]]; then
-    echo > /dev/null 2>&1
-  fi
-  d=$((${c} * 1024 * 1024))
-elif [[ $sanitized_input =~ [Gg][Bb]$ ]]; then
-  c=$(echo "${sanitized_input}" | sed 's/[Gg][Bb]$//')
-  if [[ $c -eq 0 ]]; then
-    echo > /dev/null 2>&1
-  fi
-  d=$((${c} * 1024 * 1024 * 1024))
-else
-  echo "Input tidak valid. Harap masukkan nilai dengan satuan MB atau GB (contoh: 20MB, 2GB)"
-  exit 1
-fi
-
-    if [[ ${c} != "0" ]]; then
-      echo "${d}" >/etc/vmess/${USERNAME}
-    fi
-
-if [ ! -e /etc/vmess/${USERNAME} ]; then
-    Quota1="Unlimited"
-else
-    baca1=$(cat /etc/vmess/${USERNAME})
-    Quota1=$(con ${baca1})
-fi
-
-if [ ! -e /etc/kyt/limit/vmess/ip/$USERNAME ]; then
-    iplimit="Unlimited"
-else
-    iplimit=$(cat /etc/kyt/limit/vmess/ip/$USERNAME)
-fi
-
-
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "        Vmess Account"
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "Remarks        : ${USERNAME}"
-echo "ISP            : ${ISP}"
-echo "CITY           : ${CITY}"
-echo "DOMAIN         : ${DOMAIN}"
-echo "Wildcard       : (bug.com).${DOMAIN}"
-echo "User Quota     : ${Quota1}"
-echo "User Ip        : ${IPLIMIT} IP"
-echo "Port TLS       : ${TLS}"
-echo "Port none TLS  : ${NTLS}"
-echo "Port gRPC      : ${TLS}"
-echo "id             : ${UUID}"
-echo "alterId        : 0"
-echo "Security       : auto"
-echo "Network        : ws"
-echo "Path           : /vmess/multipath"
-echo "Dynamic        : https://bugmu.com/path"
-echo "ServiceName    : vmess-grpc"
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "Link TLS       : ${VMESS_LINK_TLS}"
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "Link none TLS  : ${VMESS_LINK_NTLS}"
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "Link gRPC      : ${VMESS_LINK_GRPC}"
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "OpenClash : https://${DOMAIN}:81/vmess-$USERNAME.txt"
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "Expired On     : ${EXPIRED_AT}"
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" | tee -a /etc/vmess/akun/log-create-${USERNAME}.log
+echo "        Vmess Account" | tee -a /etc/vmess/akun/log-create-${USERNAME}.log
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" | tee -a /etc/vmess/akun/log-create-${USERNAME}.log
+echo "Remarks        : ${USERNAME}" | tee -a /etc/vmess/akun/log-create-${USERNAME}.log
+echo "ISP            : ${ISP}" | tee -a /etc/vmess/akun/log-create-${USERNAME}.log
+echo "CITY           : ${CITY}" | tee -a /etc/vmess/akun/log-create-${USERNAME}.log
+echo "DOMAIN         : ${DOMAIN}" | tee -a /etc/vmess/akun/log-create-${USERNAME}.log
+echo "Wildcard       : (bug.com).${DOMAIN}" | tee -a /etc/vmess/akun/log-create-${USERNAME}.log
+echo "User Quota     : ${QUOTA} GB" | tee -a /etc/vmess/akun/log-create-${USERNAME}.log
+echo "User Ip        : ${IPLIMIT} IP" | tee -a /etc/vmess/akun/log-create-${USERNAME}.log
+echo "Port TLS       : ${TLS}" | tee -a /etc/vmess/akun/log-create-${USERNAME}.log
+echo "Port none TLS  : ${NTLS}" | tee -a /etc/vmess/akun/log-create-${USERNAME}.log
+echo "Port gRPC      : ${TLS}" | tee -a /etc/vmess/akun/log-create-${USERNAME}.log
+echo "id             : ${UUID}" | tee -a /etc/vmess/akun/log-create-${USERNAME}.log
+echo "alterId        : 0" | tee -a /etc/vmess/akun/log-create-${USERNAME}.log
+echo "Security       : auto" | tee -a /etc/vmess/akun/log-create-${USERNAME}.log
+echo "Network        : ws" | tee -a /etc/vmess/akun/log-create-${USERNAME}.log
+echo "Path           : /vmess/multipath" | tee -a /etc/vmess/akun/log-create-${USERNAME}.log
+echo "Dynamic        : https://bugmu.com/path" | tee -a /etc/vmess/akun/log-create-${USERNAME}.log
+echo "ServiceName    : vmess-grpc" | tee -a /etc/vmess/akun/log-create-${USERNAME}.log
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" | tee -a /etc/vmess/akun/log-create-${USERNAME}.log
+echo "Link TLS       : ${VMESS_LINK_TLS}" | tee -a /etc/vmess/akun/log-create-${USERNAME}.log
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" | tee -a /etc/vmess/akun/log-create-${USERNAME}.log
+echo "Link none TLS  : ${VMESS_LINK_NTLS}" | tee -a /etc/vmess/akun/log-create-${USERNAME}.log
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" | tee -a /etc/vmess/akun/log-create-${USERNAME}.log
+echo "Link gRPC      : ${VMESS_LINK_GRPC}" | tee -a /etc/vmess/akun/log-create-${USERNAME}.log
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" | tee -a /etc/vmess/akun/log-create-${USERNAME}.log
+echo "OpenClash : https://${DOMAIN}:81/vmess-$USERNAME.txt" | tee -a /etc/vmess/akun/log-create-${USERNAME}.log
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" | tee -a /etc/vmess/akun/log-create-${USERNAME}.log
+echo "Expired On     : ${EXPIRED_AT}" | tee -a /etc/vmess/akun/log-create-${USERNAME}.log
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" | tee -a /etc/vmess/akun/log-create-${USERNAME}.log
