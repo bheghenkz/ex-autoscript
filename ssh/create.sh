@@ -77,7 +77,7 @@ echo "ISP              : ${ISP}" | tee -a /etc/xray/sshx/akun/log-create-${USERN
 echo "CITY             : ${CITY}" | tee -a /etc/xray/sshx/akun/log-create-${USERNAME}.log
 echo "IP               : ${IP}" | tee -a /etc/xray/sshx/akun/log-create-${USERNAME}.log
 echo "Host             : ${DOMAIN}" | tee -a /etc/xray/sshx/akun/log-create-${USERNAME}.log
-echo "Limit Ip         : ${IPLIMIT} IP" | tee -a /etc/sshx/akun/log-create-${USERNAME}.log
+echo "Limit Ip         : ${IPLIMIT} IP" | tee -a /etc/xray/sshx/akun/log-create-${USERNAME}.log
 echo "Port OpenSSH     : 443, 80, 22" | tee -a /etc/xray/sshx/akun/log-create-${USERNAME}.log
 echo "Port SSH UDP     : 1-65535" | tee -a /etc/xray/sshx/akun/log-create-${USERNAME}.log
 echo "Port Dropbear    : 443, 109" | tee -a /etc/xray/sshx/akun/log-create-${USERNAME}.log
