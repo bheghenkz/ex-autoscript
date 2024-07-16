@@ -14,6 +14,9 @@ DOMAIN=$(cat /etc/xray/domain)
 if [ ! -e /etc/vless ]; then
 mkdir -p /etc/vless
 fi
+if [ ! -e /etc/vless/akun ]; then
+mkdir -p /etc/vless/akun
+fi
 if [ ${IPLIMIT} = '0' ]; then
 IPLIMIT="9999"
 fi

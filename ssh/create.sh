@@ -10,12 +10,16 @@ ISP=$(cat /etc/xray/isp)
 CITY=$(cat /etc/xray/city)
 DOMAIN=$(cat /etc/xray/domain)
 
-if [[ $IPLIMIT -gt 0 ]]; then
+if [ ! -e /etc/xray/sshx ]; then
 mkdir -p /etc/xray/sshx
-echo -e "$IPLIMIT" > /etc/xray/sshx/${USERNAME}IP
-else
-echo > /dev/null
 fi
+if [ ! -e /etc/xray/sshx/akun ]; then
+mkdir -p /etc/xray/sshx/akun
+fi
+if [ -z ${IPLIMIT} ]; then
+IPLIMIT="0"
+fi
+echo "${IPLIMIT}" >/etc/xray/sshx/${USERNAME}IP
 
 useradd -e "${EXPIRED_AT}" -s /bin/false -M "${USERNAME}" &> /dev/null
 echo -e "${PASSWORD}\n${PASSWORD}\n" | passwd "${USERNAME}" &> /dev/null
@@ -73,6 +77,7 @@ echo "ISP              : ${ISP}" | tee -a /etc/xray/sshx/akun/log-create-${USERN
 echo "CITY             : ${CITY}" | tee -a /etc/xray/sshx/akun/log-create-${USERNAME}.log
 echo "IP               : ${IP}" | tee -a /etc/xray/sshx/akun/log-create-${USERNAME}.log
 echo "Host             : ${DOMAIN}" | tee -a /etc/xray/sshx/akun/log-create-${USERNAME}.log
+echo "Limit Ip         : ${IPLIMIT} IP" | tee -a /etc/sshx/akun/log-create-${USERNAME}.log
 echo "Port OpenSSH     : 443, 80, 22" | tee -a /etc/xray/sshx/akun/log-create-${USERNAME}.log
 echo "Port SSH UDP     : 1-65535" | tee -a /etc/xray/sshx/akun/log-create-${USERNAME}.log
 echo "Port Dropbear    : 443, 109" | tee -a /etc/xray/sshx/akun/log-create-${USERNAME}.log

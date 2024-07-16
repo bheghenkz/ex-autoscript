@@ -10,9 +10,11 @@ ISP=$(cat /etc/xray/isp)
 CITY=$(cat /etc/xray/city)
 DOMAIN=$(cat /etc/xray/domain)
 
-
 if [ ! -e /etc/trojan ]; then
 mkdir -p /etc/trojan
+fi
+if [ ! -e /etc/trojan/akun ]; then
+mkdir -p /etc/trojan/akun
 fi
 if [ ${IPLIMIT} = '0' ]; then
 IPLIMIT="9999"
